@@ -1,76 +1,110 @@
-Below is the detailed implementation plan in markdown with step-by-step instructions, including all dependent file changes and best practices.
+```markdown
+# Detailed Plan for 3-Story Building Planning Web Application
+
+This plan outlines the creation of a Next.js–based web application that allows users to plan and visualize a 3-story building. The application features a modern, clean UI with floor selection, floor plan visualization, a project timeline, and a material estimator form for cost and material planning.
 
 ---
 
-### 1. Assess Affected File
+## 1. Project Structure & New Files
 
-- **Dependent File:**  
-  - File to be updated: **public/centered-heading.html**  
-  - The file already includes an HTML boilerplate, inline CSS for layout, and a centered heading.
+- **New Page**
+  - **File:** `src/app/building-planner/page.tsx`
+    - Create a new Next.js page for the Building Planner.
+    - Import and render the main BuildingPlanner component.
+    - Add appropriate `<head>` tags (title, meta) for SEO.
+    - Implement error boundaries for robust page loading.
 
-- **Error Handling & Best Practices:**  
-  - Verify that the CSS gradient works on modern browsers while providing a fallback (e.g., a solid background color) if gradients are unsupported.  
-  - Ensure text contrast is sufficient against the gradient background for accessibility.
+- **New Components**
+  - **BuildingPlanner Component**
+    - **File:** `src/components/BuildingPlanner.tsx`
+    - Acts as the primary container.
+    - Renders a header with the title “3-Story Building Planner” using modern typography and spacing.
+    - Maintains state for the currently selected floor (1, 2, or 3).
+    - Includes error handling (e.g., try/catch in event handlers) for subcomponents.
 
----
+  - **FloorSelector Component**
+    - **File:** `src/components/FloorSelector.tsx`
+    - Displays three tabs labeled “Floor 1”, “Floor 2”, and “Floor 3” with accessible ARIA roles.
+    - Uses callback props to update the selected floor in BuildingPlanner.
+    - Applies modern styling with hover and active states using only typography, colors, and spacing.
 
-### 2. Update the UI to Include a Gradient Background
+  - **FloorPlan Component**
+    - **File:** `src/components/FloorPlan.tsx`
+    - Receives the current floor number as a prop.
+    - Renders a grid layout simulating a floor plan (using CSS grid or flex layouts).
+    - Includes error handling to display a user-friendly message if an invalid floor is selected.
 
-- **Step-by-Step Changes in public/centered-heading.html:**  
+  - **Timeline Component**
+    - **File:** `src/components/Timeline.tsx`
+    - Displays a horizontal project timeline with milestones and progress indicators.
+    - Uses simple divs styled with modern spacing and typography.
+    - Responsive design considerations to adapt to different screen sizes.
 
-  1. **Open File:**  
-     - Open **public/centered-heading.html** in your code editor.
+  - **MaterialEstimator Component**
+    - **File:** `src/components/MaterialEstimator.tsx`
+    - Provides a form (using existing UI inputs and buttons from `src/components/ui/`) for entering material details and cost calculations.
+    - Includes client-side validation, error messages for invalid inputs, and a submission handler wrapped in try/catch.
+    - Displays calculated estimations interactively upon form submission.
 
-  2. **Modify the CSS for the Body:**  
-     - Remove or replace the existing `background-color: #f8f9fa;` property.  
-     - Add a new `background` property with a linear gradient.  
-       - For example, use the gradient:  
-         ```css
-         background: linear-gradient(135deg, #667eea, #764ba2);
-         ```
-     - Add a fallback solid color before the gradient in case the gradient is not supported.  
-       - Example fallback:  
-         ```css
-         background-color: #667eea;
-         background: linear-gradient(135deg, #667eea, #764ba2);
-         ```
+- **Styling Updates**
+  - **File:** `src/app/globals.css`
+    - Add custom CSS classes for new component styling.
+    - Ensure modern typography, balanced colors, and adequate spacing/margins.
+    - Implement responsive design rules.
 
-  3. **Enhance the Heading Style (Optional):**  
-     - To improve legibility on a gradient background, consider adding a subtle text shadow to the `<h1>`.  
-       - Example:  
-         ```css
-         h1 {
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-         }
-         ```
-     - Confirm that font-family and text alignment remain centered.
-
-  4. **Save Your Changes:**  
-     - Ensure that the file is saved correctly.
-
-  5. **Manually Test:**  
-     - Open the updated file in a browser (or refresh the running local server) by navigating to `http://localhost:8000/centered-heading.html` to confirm that the new gradient background displays correctly with the centered heading.
-
----
-
-### 3. UI/UX Considerations & Real World Scenario
-
-- **Modern & Clean UI:**  
-  - The gradient background (transitioning from a soft blue to a rich purple) provides a modern, stylistic look.  
-  - The central heading with a text shadow enhances readability and visual appeal.
-  
-- **Robustness:**  
-  - Including a fallback background-color ensures graceful degradation.
-  - The UI is self-contained within a static HTML file, making it isolated from other components and ideal as a landing or demo page.
+- **Documentation**
+  - **File:** `README.md`
+    - Update the README to include new Building Planner page information.
+    - Document navigation instructions (e.g., “Navigate to `/building-planner` in your browser to access the planner.”).
+    - Outline testing instructions for the new components.
 
 ---
 
-### Summary
+## 2. Implementation Steps & Error Handling
 
-- The file **public/centered-heading.html** will be updated to use a modern linear gradient background with a fallback solid color.  
-- CSS modifications include setting a gradient from #667eea to #764ba2 and adding an optional text shadow for the `<h1>`.  
-- Changes follow best practices by ensuring accessibility and cross-browser compatibility.  
-- The update preserves the centered layout while enhancing stylistic appearance with a gradient.  
-- Testing involves manually verifying the page via a browser.  
-- No additional files are modified or dependencies introduced.  
-- This refined UI suits real-world landing pages by providing a clean, modern visual experience.
+1. **Page Integration:**
+   - Create `src/app/building-planner/page.tsx` to serve as the route.
+   - Import BuildingPlanner and wrap with React error boundaries.
+
+2. **BuildingPlanner Component:**
+   - Initialize state (e.g., using `useState<number>(1)` for the selected floor).
+   - Render header, FloorSelector, FloorPlan (passing the selected floor), Timeline, and MaterialEstimator.
+   - Add conditional rendering to gracefully handle errors (e.g., missing data or unexpected floor number).
+
+3. **FloorSelector Component:**
+   - Render three clickable tabs.
+   - Use proper ARIA roles for accessibility.
+   - Invoke a callback to update the parent component’s state upon tab selection.
+   - Implement error-bound event handlers to prevent application crashes.
+
+4. **FloorPlan Component:**
+   - Receive `floor` as a prop.
+   - Use a CSS grid layout to simulate room layouts.
+   - Validate the `floor` prop and show an error message for out-of-range values.
+
+5. **Timeline & MaterialEstimator Components:**
+   - Use stateless functional components to render the timeline and estimator.
+   - Validate and parse user input in MaterialEstimator.
+   - Wrap external operations (if any) in try/catch and display fallback messages on errors.
+
+6. **UI/UX Considerations:**
+   - Use clean, minimalist design principles with modern typography, color contrasts, and ample whitespace.
+   - Ensure all interactive elements (tabs, buttons, form inputs) have clear visual feedback on hover and focus.
+   - Avoid external icons or image libraries; rely solely on HTML/CSS for visuals.
+   - Maintain a consistent design language across all components.
+
+7. **Testing & Best Practices:**
+   - Manually test the new page in a local development server (`npm run dev`).
+   - Validate form inputs and error messages.
+   - Confirm responsiveness across devices.
+   - Add unit tests (if applicable) for each component with proper error boundary scenarios.
+
+---
+
+## Summary
+
+- A new Next.js page (`/building-planner`) will serve as the entry for the 3-story building planning application.
+- Key components include BuildingPlanner (main container), FloorSelector (tabs for floors), FloorPlan (grid view for each floor), Timeline (project timeline), and MaterialEstimator (cost estimator form).
+- Each component will implement error handling, accessible design, and modern UI principles without external icon libraries.
+- Global styles are updated in `globals.css` for modern typography and responsive layout.
+- Documentation in README.md will reflect new features and testing instructions.
